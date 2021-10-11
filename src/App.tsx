@@ -1,39 +1,34 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import React from "react";
-import logo from "./logo.svg";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 
 import "./App.css";
+import Applications from "./pages/applications";
+import Clusters from "./pages/clusters";
+import Workspaces from "./pages/workspaces";
 
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import Header from "./common/header";
 
 function App() {
     return (
-        <div className="App">
-            <Navbar bg="light" expand="lg">
-                <Container>
-                    <Navbar.Brand href="#home">Platform Portal</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link href="#clusters">Clusters</Nav.Link>
-                            <Nav.Link href="#link">Workspaces</Nav.Link>
-                            <Nav.Link href="#link">Applications</Nav.Link>
-                        </Nav>
-                        <Nav className="justify-content-end">
-                            <NavDropdown
-                                title="Tim Park"
-                                id="basic-nav-dropdown"
-                            >
-                                <NavDropdown.Item href="#action/3.4">
-                                    Log Out
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-        </div>
+        <BrowserRouter>
+            <div className="App">
+                <Header />
+
+                <Switch>
+                    <Route path="/clusters">
+                        <Clusters />
+                    </Route>
+                    <Route path="/workspaces">
+                        <Workspaces />
+                    </Route>
+                    <Route path="/applications">
+                        <Applications />
+                    </Route>
+                </Switch>
+            </div>
+        </BrowserRouter>
     );
 }
 
