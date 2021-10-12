@@ -21,15 +21,11 @@ function Applications(props: IApplicationsProps) {
                     </>
                 );
             });
-            const workspacePath = `/workspaces/${application.workspace.id}`;
 
             return (
                 <tr key={application.id}>
                     <td>
                         <a href={applicationPath}>{application.name}</a>
-                    </td>
-                    <td>
-                        <a href={workspacePath}>{application.workspace.name}</a>
                     </td>
                     <td>{applicationClusters}</td>
                 </tr>
@@ -46,11 +42,18 @@ function Applications(props: IApplicationsProps) {
     return (
         <Container>
             <Row>
-                <Table striped bordered hover style={{ marginTop: 10 }}>
+                <Col>
+                    <h2 style={{ marginTop: 10, textAlign: "left" }}>
+                        Risk Modeling Workspace
+                    </h2>
+                </Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Table striped bordered hover>
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Workspace</th>
                             <th>Clusters</th>
                         </tr>
                     </thead>

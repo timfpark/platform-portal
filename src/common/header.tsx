@@ -12,9 +12,6 @@ function Header() {
                         <Nav.Link as={Link} to="/clusters">
                             Clusters
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/workspaces">
-                            Workspaces
-                        </Nav.Link>
                         <Nav.Link as={Link} to="/applications">
                             Applications
                         </Nav.Link>
