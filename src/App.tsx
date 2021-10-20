@@ -1,78 +1,115 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Switch, Redirect, Route } from "react-router-dom";
 
 import "./App.css";
 
+import Application from "./models/application";
 import Cluster from "./models/cluster";
 import Workspace from "./models/workspace";
 
-import Applications from "./pages/applications";
-import Clusters from "./pages/clusters";
 import Workspaces from "./pages/workspaces";
+import Clusters from "./pages/clusters";
 
 import Header from "./common/header";
-import Application from "./models/application";
 
 function App() {
-    const workspace = new Workspace({
-        id: "risk-modeling",
-        name: "Risk Modeling",
+    const azureEastUS1 = new Cluster({
+        id: "azure-eastus-1",
+        name: "azure-eastus-1",
+        cloud: "azure",
+        region: "eastus",
     });
 
-    const [applications, setApplications] = useState([] as Application[]);
-    const [clusters, setClusters] = useState([] as Cluster[]);
-    const [workspaces, setWorkspaces] = useState([workspace] as Workspace[]);
+    const azureWestUS1 = new Cluster({
+        id: "azure-westus-1",
+        name: "azure-westus-1",
+        cloud: "azure",
+        region: "westus",
+    });
 
-    useEffect(() => {
-        console.log("new page load");
-    }, []);
+    const initialClusters = [azureEastUS1, azureWestUS1];
+
+    const riskModelingApi = new Application({
+        id: "risk-modeling-api",
+        name: "Risk Modeling API",
+        clusters: [azureEastUS1, azureWestUS1],
+        status: "green",
+    });
+
+    const riskModelingWebapp = new Application({
+        id: "risk-modeling-webapp",
+        name: "Risk Modeling WebApp",
+        clusters: [azureEastUS1, azureWestUS1],
+        status: "green",
+    });
+
+    const riskModeling = new Workspace({
+        id: "risk-modeling",
+        name: "Risk Modeling",
+        applications: [riskModelingApi, riskModelingWebapp],
+    });
+
+    const emptyForeignExchangeWorkspace = new Workspace({
+        id: "foreign-exchange",
+        name: "Foreign Exchange",
+        applications: [],
+    });
+
+    const forexApi = new Application({
+        id: "foreign-exchange-api",
+        name: "Foreign Exchange API",
+        clusters: [azureEastUS1],
+        status: "coral",
+    });
+
+    const initialWorkspaces = [
+        riskModeling,
+        emptyForeignExchangeWorkspace,
+    ] as Workspace[];
+
+    const [clusters, setClusters] = useState(initialClusters);
+    const [workspaces, setWorkspaces] = useState(initialWorkspaces);
 
     const onAddCluster = () => {
-        let newCluster;
-
-        if (clusters.length === 0) {
-            newCluster = new Cluster({
-                id: "azure-eastus-1",
-                name: "azure-eastus-1",
-                cloud: "azure",
-                region: "eastus",
-            });
-        } else {
-            newCluster = new Cluster({
-                id: "azure-westus-1",
-                name: "azure-westus-1",
-                cloud: "azure",
-                region: "westus",
-            });
+        if (clusters.length !== 2) {
+            return;
         }
+
+        let newCluster = new Cluster({
+            id: "azure-westus-2",
+            name: "azure-westus-2",
+            cloud: "azure",
+            region: "westus",
+        });
 
         const newClusters = clusters.concat([newCluster]);
         setClusters(newClusters);
     };
 
-    const onAddApplication = () => {
-        let newApplication;
+    const onAddApplication = (workspace: Workspace) => {
+        if (workspaces[1].applications.length === 0) {
+            const fullForeignExchangeWorkspace = new Workspace({
+                id: "foreign-exchange",
+                name: "Foreign Exchange",
+                applications: [forexApi],
+            });
 
-        if (applications.length === 0) {
-            newApplication = new Application({
-                id: "api",
-                name: "Risk Modeling API",
-                workspace,
-                clusters,
-            });
-        } else {
-            newApplication = new Application({
-                id: "webapp",
-                name: "Risk Modeling Web Application",
-                workspace,
-                clusters,
-            });
+            setWorkspaces([riskModeling, fullForeignExchangeWorkspace]);
+
+            setTimeout(() => {
+                forexApi.status = "green";
+
+                const fullForeignExchangeWorkspace = new Workspace({
+                    id: "foreign-exchange",
+                    name: "Foreign Exchange",
+                    applications: [forexApi],
+                });
+
+                setWorkspaces([riskModeling, fullForeignExchangeWorkspace]);
+            }, 30000);
         }
-
-        const newApplications = applications.concat([newApplication]);
-        setApplications(newApplications);
     };
 
     return (
@@ -88,16 +125,13 @@ function App() {
                         />
                     </Route>
                     <Route path="/workspaces">
-                        <Workspaces workspaces={workspaces} />
-                    </Route>
-                    <Route path="/applications">
-                        <Applications
-                            applications={applications}
+                        <Workspaces
+                            workspaces={workspaces}
                             onAddApplication={onAddApplication}
                         />
                     </Route>
 
-                    <Redirect to="/clusters" />
+                    <Redirect to="/workspaces" />
                 </Switch>
             </div>
         </BrowserRouter>

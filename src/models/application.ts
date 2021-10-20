@@ -1,24 +1,26 @@
 import Cluster from "./cluster";
-import Workspace from "./workspace";
 
 interface IApplicationParams {
     id: string;
     name: string;
-    workspace: Workspace;
     clusters: Cluster[];
+
+    status: string;
 }
 
 class Application {
     id: string;
     name: string;
-    workspace: Workspace;
     clusters: Cluster[];
+
+    status: string;
 
     constructor(params: IApplicationParams) {
         this.id = params.id;
         this.name = params.name;
-        this.workspace = params.workspace;
         this.clusters = params.clusters;
+
+        this.status = params.status;
     }
 }
 

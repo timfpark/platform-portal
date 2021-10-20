@@ -1,47 +1,24 @@
-import { Container, Row, Table } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 import Workspace from "../models/workspace";
+import WorkspaceRow from "../components/workspaceRow";
 
 interface IWorkspacesProps {
     workspaces: Workspace[];
+    onAddApplication: (workspace: Workspace) => void;
 }
 
 function Workspaces(props: IWorkspacesProps) {
-    let clusterRows;
-
-    if (props.workspaces.length > 0) {
-        clusterRows = props.workspaces.map((workspace) => {
-            const workspacePath = `/workspaces/${workspace.id}`;
-            return (
-                <tr key={workspace.name}>
-                    <td>
-                        <a href={workspacePath}>{workspace.name}</a>
-                    </td>
-                </tr>
-            );
-        });
-    } else {
-        clusterRows = (
-            <tr>
-                <td colSpan={3}>No workspaces registered.</td>
-            </tr>
+    const workspaceRows = props.workspaces.map((workspace) => {
+        return (
+            <WorkspaceRow
+                workspace={workspace}
+                onAddApplication={props.onAddApplication}
+            />
         );
-    }
+    });
 
-    return (
-        <Container>
-            <Row>
-                <Table striped bordered hover style={{ marginTop: 10 }}>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>{clusterRows}</tbody>
-                </Table>
-            </Row>
-        </Container>
-    );
+    return <Container>{workspaceRows}</Container>;
 }
 
 export default Workspaces;
